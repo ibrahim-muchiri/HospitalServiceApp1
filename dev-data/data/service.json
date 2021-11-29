@@ -1,0 +1,35 @@
+[
+ {
+  "name": "In-patient and out-patient care",
+  "price": 200,
+  "summary": "Our hospital offers both services of customer stay or spend a night in hospital or leave the same day"
+ },
+
+ {
+  "name": "Specialised Clinic",
+  "price": 8500,
+  "summary": "Our hospital offers both services of customer stay or spend a night in hospital or leave the same day"
+ },
+
+ {
+  "name": "Health Promotion Services",
+  "price": 1500,
+  "summary": "Our hospital offers both services of customer stay or spend a night in hospital or leave the same day"
+ },
+ {
+  "name": "Rehabilitative Services",
+  "price": 15000,
+  "summary": "Our hospital offers both services of customer stay or spend a night in hospital or leave the same day"
+ },
+
+ {
+  "name": "Imaging Services",
+  "price": 3000,
+  "summary": "Our hospital offers both services of customer stay or spend a night in hospital or leave the same day"
+ },
+ {
+  "name": "Funeral Home Services",
+  "price": 5000,
+  "summary": "Our hospital offers both services of customer stay or spend a night in hospital or leave the same day"
+ }
+]
