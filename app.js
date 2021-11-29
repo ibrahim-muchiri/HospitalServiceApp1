@@ -10,10 +10,6 @@ if (process.env.NODE_ENV === 'development') {
 }
 app.use(express.json());
 
-//service route
-
-//git here
-
 //customer route
 
 //service Controller
