@@ -18,4 +18,8 @@ app.use(express.json());
 app.use('/api/v1/customer', customerRouter);
 app.use('/api/v1/service', serviceRouter);
 
+//app.all('/*', (req, res, next) => {});
+
+// app.use(globalAppError);
+
 module.exports = app;

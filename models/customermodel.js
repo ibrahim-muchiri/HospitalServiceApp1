@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const uniqueValidator = require('mongoose-unique-validator');
 const bcrypt = require('bcryptjs');
 
 const customerSchema = new mongoose.Schema({
@@ -43,6 +44,7 @@ customerSchema.pre('save', async function(next) {
  //Delete the confirmPassword in the db
  this.confirmPassword = undefined;
 });
+customerSchema.plugin(uniqueValidator);
 
 const Customer = mongoose.model('Customer', customerSchema);
 
