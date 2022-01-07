@@ -2,12 +2,13 @@ const Customer = require('./../models/customermodel');
 const catchAsync = require('./../utils/catchAsync');
 
 exports.getAllCustomers = catchAsync(async (req, res, next) => {
- const customer = await Customer.find();
+ const customers = await Customer.find();
 
  res.status(200).json({
   status: 'success',
+  results: customers.length,
   data: {
-   customer,
+   customers,
   },
  });
 });

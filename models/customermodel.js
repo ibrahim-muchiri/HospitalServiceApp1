@@ -13,9 +13,10 @@ const customerSchema = new mongoose.Schema({
  email: {
   type: String,
   required: [true, 'email address ids being required here'],
-  Unique: [true, 'please, the email has been taken, select another email!'],
+  unique: [true, 'please, the email has been taken, select another email!'],
   lowercase: true,
   validate: [validator.isEmail, 'please provide a valid email'],
+  index: true,
  },
  password: {
   type: String,
@@ -45,6 +46,14 @@ customerSchema.pre('save', async function(next) {
  this.confirmPassword = undefined;
 });
 customerSchema.plugin(uniqueValidator);
+
+//Login
+customerSchema.methods.protectPassword = async function(
+ candidatePassword,
+ customerPassword
+) {
+ return await bcrypt.compare(candidatePassword, customerPassword);
+};
 
 const Customer = mongoose.model('Customer', customerSchema);
 
