@@ -1,54 +1,10 @@
 const Review = require('../models/reviewModel');
 const catchAsync = require('./../utils/catchAsync');
+const factory = require('./handlerFactory');
 
-exports.getAllReviews = catchAsync(async (req, res, next) => {
- const reviews = await Review.find();
+exports.getAllReviews = factory.getAll(Review);
 
- res.status(200).json({
-  status: 'success',
-  data: {
-   reviews,
-  },
- });
-});
-exports.getReview = catchAsync(async (req, res, next) => {
- const reviews = await Review.findById(req.params.id);
-
- res.status(200).json({
-  status: 'success',
-  data: {
-   reviews,
-  },
- });
-});
-exports.createReview = catchAsync(async (req, res, next) => {
- const reviews = await Review.create(req.body);
-
- res.status(200).json({
-  status: 'success',
-  data: {
-   reviews,
-  },
- });
-});
-
-exports.updateReview = catchAsync(async (req, res, next) => {
- const reviews = await Review.findByIdAndUpdate(req.params.id, req.body);
-
- res.status(200).json({
-  status: 'success',
-  data: {
-   reviews,
-  },
- });
-});
-exports.deleteReview = catchAsync(async (req, res, next) => {
- const reviews = await Review.findByIdAndDelete(req.params.id);
-
- res.status(200).json({
-  status: 'success',
-  data: {
-   reviews,
-  },
- });
-});
+exports.getReview = factory.getOne(Review);
+exports.createReview = factory.createOne(Review);
+exports.updateReview = factory.updateOne(Review);
+exports.deleteReview = factory.deleteOne(Review);

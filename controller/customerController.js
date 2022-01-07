@@ -1,56 +1,12 @@
 const Customer = require('./../models/customermodel');
-const catchAsync = require('./../utils/catchAsync');
+//const catchAsync = require('./../utils/catchAsync');
+const factory = require('./handlerFactory');
 
-exports.getAllCustomers = catchAsync(async (req, res, next) => {
- const customers = await Customer.find();
+exports.getAllCustomers = factory.getAll(Customer);
 
- res.status(200).json({
-  status: 'success',
-  results: customers.length,
-  data: {
-   customers,
-  },
- });
-});
+exports.getCustomer = factory.getOne(Customer);
+exports.createCustomer = factory.createOne(Customer);
 
-exports.getCustomer = catchAsync(async (req, res, next) => {
- const customer = await Customer.findById(req.params.id);
+exports.updateCustomer = factory.updateOne(Customer);
 
- res.status(200).json({
-  status: 'success',
-  data: {
-   customer,
-  },
- });
-});
-
-exports.createCustomer = catchAsync(async (req, res, next) => {
- const customer = await Customer.create(req.body);
-
- res.status(201).json({
-  status: 'success',
-  data: {
-   customer,
-  },
- });
-});
-
-exports.updateCustomer = catchAsync(async (req, res, next) => {
- const customer = await Customer.findByIdAndUpdate(req.params.id, req.body);
-
- res.status(204).json({
-  status: 'success',
-  data: {
-   customer,
-  },
- });
-});
-
-exports.deleteCustomer = catchAsync(async (req, res, next) => {
- const customer = await Customer.findByIdAndDelete(req.params.id);
-
- res.status(200).json({
-  status: 'success',
-  message: 'deleted successfully!',
- });
-});
+exports.deleteCustomer = factory.deleteOne(Customer);
