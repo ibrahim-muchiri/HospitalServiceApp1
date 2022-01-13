@@ -5,7 +5,8 @@
  "main": "app.js",
  "scripts": {
   "test": "echo \"Error: no test specified\" && exit 1",
-  "start": "nodemon server.js"
+  "start": "nodemon server.js",
+  "start:prod": "NODE_ENV=production nodemon server.js"
  },
  "author": "Muchiri Ibrahim",
  "license": "ISC",
@@ -13,6 +14,7 @@
   "bcryptjs": "^2.4.3",
   "dotenv": "^10.0.0",
   "express": "^4.17.1",
+  "html-to-text": "^8.1.0",
   "jsonwebtoken": "^8.5.1",
   "mongoose": "^6.0.13",
   "mongoose-unique-validator": "^3.0.0",

@@ -1,8 +1,10 @@
+const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const Customer = require('./../models/customermodel');
 const AppError = require('./../utils/appError');
 
 const catchAsync = require('./../utils/catchAsync');
+const { userInfo } = require('os');
 
 const signToken = (id) => {
  return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -50,3 +52,67 @@ exports.login = catchAsync(async (req, res, next) => {
   token,
  });
 });
+
+exports.protect = catchAsync(async (req, res, next) => {
+ //1) Get the token and check if its there
+ let token;
+ if (
+  req.headers.authorization &&
+  req.headers.authorization.startsWith('Bearer')
+ ) {
+  token = req.headers.authorization.split(' ')[1];
+ }
+ console.log(token);
+
+ if (!token) {
+  //   console.log(token);
+  next(new AppError('Please, Log in first for you to get access', 401));
+ }
+
+ //2) Verification of the token
+ const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+ console.log(decoded);
+ //3.) Check if the user still exist
+ const freshCustomer = await Customer.findById(decoded.id);
+ if (!freshCustomer) {
+  return next(new AppError('The user elonging to thid id nolonger exist', 401));
+  //console.log(freshUser);
+ }
+ //4.) Check if the user changed the password after the token was issued
+ if (freshCustomer.changedPasswordAfter(decoded.iat)) {
+  return next(
+   new AppError('User recently changed the password!, please log in again', 401)
+  );
+ }
+
+ //GRANT ACCESS TO THE PROTECTED ROUTE
+ req.customer = freshCustomer;
+ next();
+});
+
+exports.restrictTo = (...roles) => {
+ return (req, res, next) => {
+  if (!roles.includes(req.customer.role)) {
+   return next(
+    new AppError('You do not have a permission to perform this action', 403)
+   );
+  }
+  next();
+ };
+};
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+ //1.) Get user based on POsted email
+ const customer = await Customer.findOne({ email: req.body.email });
+ if (!customer) {
+  return next(new AppError('There is no user with that email address!', 404));
+ }
+ //2.) Genetrate the random reset token
+ const resetToken = customer.createPasswordResetToken();
+ await customer.save({ validateBeforeSave: false });
+ //3.) Send it to the user's emai
+
+ //next();
+});
+
+exports.resetPassword = catchAsync(async (req, res, next) => {});

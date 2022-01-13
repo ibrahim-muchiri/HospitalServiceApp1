@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const uniqueValidator = require('mongoose-unique-validator');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
+//const parse = require('nodemon/lib/cli/parse');
 
 const customerSchema = new mongoose.Schema({
  name: {
@@ -18,11 +20,19 @@ const customerSchema = new mongoose.Schema({
   validate: [validator.isEmail, 'please provide a valid email'],
   index: true,
  },
+ role: {
+  type: String,
+  enum: ['Customer', 'Doctor', 'Nurse', 'Clinical-Officer', 'Admin'],
+  default: 'Customer',
+  //required: [true, 'Please, this field is required'],
+ },
+
  password: {
   type: String,
   required: [true, 'Password is required here'],
   select: false,
  },
+
  confirmPassword: {
   type: String,
   required: [true, 'Please, confirm your password'],
@@ -34,6 +44,11 @@ const customerSchema = new mongoose.Schema({
    message: 'Password must be the same',
   },
  },
+ passwordChangedAt: {
+  type: Date,
+ },
+ passwordResetToken: String,
+ passwordResetExpires: Date,
 });
 customerSchema.pre('save', async function(next) {
  //Only run this if the password is modified
@@ -53,6 +68,31 @@ customerSchema.methods.protectPassword = async function(
  customerPassword
 ) {
  return await bcrypt.compare(candidatePassword, customerPassword);
+};
+customerSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
+ if (this.passwordChangedAt) {
+  const changedTimestamp = parseInt(
+   this.passwordChangedAt.getTime() / 1000,
+   10
+  );
+  console.log(this.passwordChangedAt, JWTTimestamp);
+  return JWTTimestamp < changedTimestamp;
+ }
+ //FALSE means not changed
+ return false;
+};
+customerSchema.methods.createPasswordResetToken = function() {
+ const resetToken = crypto.randomBytes(32).toString('hex');
+ this.passwordResetToken = crypto
+  .createHash('sha256')
+  .update(resetToken)
+  .digest('hex');
+
+ console.log({ resetToken }, this.passwordResetToken);
+
+ this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+
+ return resetToken;
 };
 
 const Customer = mongoose.model('Customer', customerSchema);
