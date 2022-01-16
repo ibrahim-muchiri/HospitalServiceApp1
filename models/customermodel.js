@@ -69,6 +69,8 @@ customerSchema.methods.protectPassword = async function(
 ) {
  return await bcrypt.compare(candidatePassword, customerPassword);
 };
+
+//PROTECT(No.4)
 customerSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
  if (this.passwordChangedAt) {
   const changedTimestamp = parseInt(
@@ -81,6 +83,8 @@ customerSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
  //FALSE means not changed
  return false;
 };
+
+//Forgot password
 customerSchema.methods.createPasswordResetToken = function() {
  const resetToken = crypto.randomBytes(32).toString('hex');
  this.passwordResetToken = crypto
